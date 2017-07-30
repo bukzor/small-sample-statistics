@@ -1,0 +1,7 @@
+*.prereqs
+tmp/
+*.tmp
+
+# FIXME: let's not do this in future
+serve:redo.db
+serve:redo.out

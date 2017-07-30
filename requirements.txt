@@ -1,0 +1,3 @@
+#ephemeral-port-reserve
+# pending: https://github.com/Yelp/ephemeral-port-reserve/pull/5
+-e git+https://github.com/bukzor/ephemeral-port-reserve-1@idempotency#egg=ephemeral-port-reserve
