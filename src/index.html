@@ -16,17 +16,16 @@
   <body class='main'>
     <h1>Small Sample Statistics</h1>
 
-
     <div class="toleranceInput">
       <div>
         Min: <output></output>
-        <input class="toleranceInput__min" value="25" type="range">
+        <input class="toleranceInput__slider" name="min" value="25" type="range">
       </div> <div>
         Max: <output></output>
-        <input class="toleranceInput__max" value="75" type="range">
+        <input class="toleranceInput__slider" name="max" value="75" type="range">
       </div> <div>
         Percent: <output></output>%
-        <input class="toleranceInput__percent" value="50" type="range">
+        <input class="toleranceInput__slider" name="percent" value="50" type="range">
       </div>
     </div>
 
@@ -34,7 +33,9 @@
       TODO: plot tolerance area on joint distribution
     </div>
 
-    <svg xmlns="http://www.w3.org/2000/svg" class="sampleInput"></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" class="sampleInput">
+      <rect class="sampleInput__tolerance"></rect>
+    </svg>
 
     <div>
       Samples: <span class="samples">(none)</span>

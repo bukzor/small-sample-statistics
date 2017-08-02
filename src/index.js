@@ -5,7 +5,6 @@ const data = {
   max: NaN,
   percent: NaN,
 }
-const toleranceInput = "toleranceInput"
 
 // let's use blissful?
 let $ = document.querySelector.bind(document)
@@ -55,27 +54,38 @@ let initToleranceInput = function() {
   let svg = $('svg')
   let min = svg.x.baseVal.value
   let max = min + svg.width.baseVal.value
-  for (slider of ["min", "max"]) {
-    slider = $('.' + toleranceInput + '__' + slider)
-    slider.setAttribute('min', min)
-    slider.setAttribute('max', max)
-    changeToleranceInput({target:slider})
-  }
-  changeToleranceInput({target:$('.' + toleranceInput + '__percent')})
+  $$('.toleranceInput__slider').forEach(slider => {
+    if (['min', 'max'].includes(slider.name)) {
+      slider.setAttribute('min', min)
+      slider.setAttribute('max', max)
+    }
+    inputToleranceInput({target:slider})
+  })
+
+  let rect = $('.sampleInput__tolerance')
+  rect.setAttribute('y', svg.y.baseVal.value)
+  rect.setAttribute('height', svg.height.baseVal.value)
 }
 
-let changeToleranceInput = function(event) {
+let inputToleranceInput = function(event) {
   let slider = event.target
-  let value = slider.value
-  let name = Array.from(slider.classList).filter(
-    className => className.startsWith(toleranceInput + '__')
-  )[0].slice(toleranceInput.length + 2)
 
-  data[name] = Number(value);
+  data[slider.name] = Number(slider.value);
   slider
     .parentElement
     .querySelector('output')
-    .innerText = value
+    .innerText = slider.value
+
+  let rect = $('.sampleInput__tolerance')
+  if (! isNaN(data.min)) {
+    rect.setAttribute('x', data.min)
+    if (! isNaN(data.max)) {
+      rect.setAttribute('width', data.max - data.min)
+    }
+  }
+  if (! isNaN(data.percent)) {
+    rect.style.fillOpacity = data.percent / 100;
+  }
 }
 
 
@@ -86,6 +96,6 @@ let init = function() {
 
   initToleranceInput()
   document
-    .querySelectorAll('[class^="' + toleranceInput + '__"]')
-    .forEach(e => e.addEventListener('change', changeToleranceInput))
+    .querySelectorAll('.toleranceInput__slider')
+    .forEach(e => e.addEventListener('input', inputToleranceInput))
 }
