@@ -17,11 +17,29 @@
     <h1>Small Sample Statistics</h1>
 
 
+    <div class="toleranceInput">
+      <div>
+        Min: <output></output>
+        <input class="toleranceInput__min" value="25" type="range">
+      </div> <div>
+        Max: <output></output>
+        <input class="toleranceInput__max" value="75" type="range">
+      </div> <div>
+        Percent: <output></output>%
+        <input class="toleranceInput__percent" value="50" type="range">
+      </div>
+    </div>
+
+    <div>
+      TODO: plot tolerance area on joint distribution
+    </div>
+
     <svg xmlns="http://www.w3.org/2000/svg" class="sampleInput"></svg>
 
     <div>
       Samples: <span class="samples">(none)</span>
     </div>
+
 
     <table class="statistics">
       <tr>
@@ -33,10 +51,45 @@
       </tr>
     </table>
 
+    <div>
+      Let's assume this follows a normal distribution
+      with two parameters: degrees of freedom (k) and shape (λ).
+      <p>
+      <small>FIXME: update this to assume log-normal distribution</small>
+    </div>
 
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js" type="text/javascript"></script>
-  <script src="index.js" type="text/javascript"></script>
-  <script type="text/javascript">
-  </script>
+    <div>
+      TODO: CDF of the mean
+    </div>
+
+    <div>
+      TODO: CDF of the variance
+    </div>
+
+    <div>
+      TODO: joint CDF (mean, variance)
+    </div>
+
+
+    <div>
+      TODO: Finally, integrate the tolerance area of the joint distribution,
+      and decide on pass/fail/more.
+    </div>
+    
+    <script
+      async
+      src="//cdnjs.cloudflare.com/ajax/libs/blissfuljs/1.0.4/bliss.js"
+      integrity="sha256-o+7aCmzPXjZyeqM+Zz6UmSeVJQeLCRE0mOOfG768WUg="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      async
+      src="//cdnjs.cloudflare.com/ajax/libs/mathjs/3.15.0/math.js"
+      integrity="sha256-oDO8dYqkI7artPn5HobcguhXKLOOqJX680ePk8hvZ4w="
+      crossorigin="anonymous"
+    ></script>
+    <!-- for plotting the 3d pdf https://plot.ly/javascript/3d-charts/ -->
+    <script async src="https://cdn.plot.ly/plotly-1.29.0.js"></script>
+    <script async src="index.js" onload="init()"></script>
   </body>
 </html>
