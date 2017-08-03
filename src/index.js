@@ -40,10 +40,10 @@ function colorizeThreshold(value, threshold) {
   let percentage = value / threshold * 100
   if ( percentage >= 100 ) {
     S = 100
-    L = 55
+    L = 50
   } else {
     S = 80
-    L = 45
+    L = 40
   }
   return 'hsl(' + value + ', ' + S + '%, ' + L + '%)'
 }
@@ -54,41 +54,30 @@ let normalCDF = function(x, mean, variance) {
   ))
 }
 
-let renderToleranceArea = debounce(function() {
-  let ta = $('.toleranceArea')
-  let minX = ta.x.baseVal.value
-  let maxX = minX + ta.width.baseVal.value
-  let minY = ta.y.baseVal.value
-  let maxY = minY + ta.height.baseVal.value
-  let step = 3
+let renderToleranceArea = function() {
+  canvas = $('.toleranceArea')
+  ctx = canvas.getContext('2d')
+  let step = 1
 
-  ta.innerHTML = ''
-  for (x = minX; x <= maxX; x = x + step) {
+  for (x = 0; x <= canvas.width; x = x + step) {
     let mean = x
-    for (y = minY; y <= maxY; y = y + step) {
+    for (y = 0; y <= canvas.height; y = y + step) {
       let variance = Math.pow(y, 2)
       let value = 100 * (
         normalCDF(data.max, mean, variance) -
         normalCDF(data.min, mean, variance)
       )
-      ta.append(svgNode('circle', {
-        cx: x,
-        cy: y,
-        r: 2,
-        "data-value": value,
-        fill: colorizeThreshold(value, data.percent),
-      }))
+      ctx.fillStyle = colorizeThreshold(value, data.percent)
+      ctx.fillRect(x, y, step, step)
     }
   }
-}, 200)
+}
 
 
 let renderSamples = function() {
   $('.samples').innerText = data.samples.join(', ')
-}
 
-
-let renderStatistics = function() {
+  // sample statistics
   let count = data.samples.length
   $('.statistics__count').innerText = count
   let mean = (
@@ -99,13 +88,6 @@ let renderStatistics = function() {
     data.samples.reduce((acc, next) => acc + Math.pow(next - mean, 2), 0) / count,
     0.5,
   ).toFixed(2)
-}
-
-
-let render = function() {
-  renderSamples()
-  renderStatistics()
-  renderToleranceArea()
 }
 
 
@@ -120,7 +102,7 @@ let sampleInputClick = function(event) {
   data.samples.push(event.offsetX)
   data.samples.sort()
 
-  render()
+  renderSamples()
 }
 
 let initToleranceInput = function() {
@@ -151,6 +133,10 @@ let inputToleranceInput = function(event) {
     .querySelector('output')
     .innerText = slider.value
 
+  renderToleranceRect()
+}
+
+let renderToleranceRect = function() {
   let rect = $('.sampleInput__tolerance')
   if (! isNaN(data.min)) {
     rect.setAttribute('x', data.min)
@@ -161,20 +147,29 @@ let inputToleranceInput = function(event) {
   if (! isNaN(data.percent)) {
     rect.style.fillOpacity = data.percent / 100
   }
-
-  render()
 }
 
 
+
 let init = function() {
+  $$('canvas').forEach(canvas => {
+    canvas.width = canvas.scrollWidth
+    canvas.height = canvas.scrollHeight
+  })
+
   document
     .querySelector('.sampleInput')
     .addEventListener('click', sampleInputClick)
 
   initToleranceInput()
+  renderToleranceArea()
   document
     .querySelectorAll('.toleranceInput__slider')
-    .forEach(e => e.addEventListener('input', inputToleranceInput))
+    .forEach(slider => {
+        slider.addEventListener('input', inputToleranceInput)
+        slider.addEventListener('change', renderToleranceArea)
+    })
+
 }
 
 
