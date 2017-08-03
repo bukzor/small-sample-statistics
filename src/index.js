@@ -54,7 +54,7 @@ let normalCDF = function(x, mean, variance) {
   ))
 }
 
-let renderToleranceArea = function() {
+let renderToleranceArea = debounce(function() {
   let ta = $('.toleranceArea')
   let minX = ta.x.baseVal.value
   let maxX = minX + ta.width.baseVal.value
@@ -80,7 +80,7 @@ let renderToleranceArea = function() {
       }))
     }
   }
-}
+}, 200)
 
 
 let renderSamples = function() {
@@ -101,12 +101,11 @@ let renderStatistics = function() {
   ).toFixed(2)
 }
 
-debouncedRenderToleranceArea = debounce(renderToleranceArea, 200)
 
 let render = function() {
   renderSamples()
   renderStatistics()
-  debouncedRenderToleranceArea();
+  renderToleranceArea();
 }
 
 
@@ -176,14 +175,12 @@ let init = function() {
   document
     .querySelectorAll('.toleranceInput__slider')
     .forEach(e => e.addEventListener('input', inputToleranceInput))
-
-  renderToleranceArea();
 }
 
 
-if (document.readyState == "loading") {
-  document.addEventListener("DOMContentLoaded", init);
+if (document.readyState == "complete") {
+  init();
 }
 else {
-  init();
+  window.addEventListener("load", init);
 }
