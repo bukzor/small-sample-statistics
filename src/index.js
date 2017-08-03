@@ -16,34 +16,34 @@ let $$ = document.querySelectorAll.bind(document)
 // N milliseconds. If `immediate` is passed, trigger the function on the
 // leading edge, instead of the trailing.
 function debounce(func, wait, immediate) {
-  var timeout;
+  var timeout
   return function() {
-    var context = this, args = arguments;
+    var context = this, args = arguments
     var later = function() {
-      timeout = null;
-      if (!immediate) func.apply(context, args);
-    };
-    var callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow) func.apply(context, args);
-  };
-};
+      timeout = null
+      if (!immediate) func.apply(context, args)
+    }
+    var callNow = immediate && !timeout
+    clearTimeout(timeout)
+    timeout = setTimeout(later, wait)
+    if (callNow) func.apply(context, args)
+  }
+}
 
 function svgNode(n, v) {
-  n = document.createElementNS("http://www.w3.org/2000/svg", n);
-  for (var p in v) n.setAttribute(p, v[p]);
+  n = document.createElementNS("http://www.w3.org/2000/svg", n)
+  for (var p in v) n.setAttribute(p, v[p])
   return n
 }
 
 function colorizeThreshold(value, threshold) {
   let percentage = value / threshold * 100
   if ( percentage >= 100 ) {
-    S = 100;
-    L = 55;
+    S = 100
+    L = 55
   } else {
     S = 80
-    L = 45;
+    L = 45
   }
   return 'hsl(' + value + ', ' + S + '%, ' + L + '%)'
 }
@@ -60,11 +60,11 @@ let renderToleranceArea = debounce(function() {
   let maxX = minX + ta.width.baseVal.value
   let minY = ta.y.baseVal.value
   let maxY = minY + ta.height.baseVal.value
-  let step = 3;
+  let step = 3
 
-  ta.innerHTML = '';
+  ta.innerHTML = ''
   for (x = minX; x <= maxX; x = x + step) {
-    let mean = x;
+    let mean = x
     for (y = minY; y <= maxY; y = y + step) {
       let variance = Math.pow(y, 2)
       let value = 100 * (
@@ -105,7 +105,7 @@ let renderStatistics = function() {
 let render = function() {
   renderSamples()
   renderStatistics()
-  renderToleranceArea();
+  renderToleranceArea()
 }
 
 
@@ -145,7 +145,7 @@ let initToleranceInput = function() {
 let inputToleranceInput = function(event) {
   let slider = event.target
 
-  data[slider.name] = Number(slider.value);
+  data[slider.name] = Number(slider.value)
   slider
     .parentElement
     .querySelector('output')
@@ -159,10 +159,10 @@ let inputToleranceInput = function(event) {
     }
   }
   if (! isNaN(data.percent)) {
-    rect.style.fillOpacity = data.percent / 100;
+    rect.style.fillOpacity = data.percent / 100
   }
 
-  render();
+  render()
 }
 
 
@@ -179,8 +179,8 @@ let init = function() {
 
 
 if (document.readyState == "complete") {
-  init();
+  init()
 }
 else {
-  window.addEventListener("load", init);
+  window.addEventListener("load", init)
 }
