@@ -1,4 +1,3 @@
-
 * {
     box-sizing: border-box;
 }
@@ -10,6 +9,8 @@ body {
 svg {
     width: 100%;
     height: 100%;
+    border: 1px solid black;
+    margin-top: 1em;
 }
 
 .main {
@@ -19,8 +20,11 @@ svg {
 }
 
 .sampleInput {
-    border: 1px solid black;
     height: 5em;
+}
+
+.toleranceArea {
+    height: 15em;
 }
 
 .toleranceInput__slider {

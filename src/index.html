@@ -29,11 +29,10 @@
       </div>
     </div>
 
-    <div>
-      TODO: plot tolerance area on joint distribution
-    </div>
+    
+    <svg class="toleranceArea" transform="scale(1,-1)"></svg>
 
-    <svg xmlns="http://www.w3.org/2000/svg" class="sampleInput">
+    <svg class="sampleInput">
       <rect class="sampleInput__tolerance"></rect>
     </svg>
 
@@ -84,13 +83,13 @@
       crossorigin="anonymous"
     ></script>
     <script
-      async
+      defer
       src="//cdnjs.cloudflare.com/ajax/libs/mathjs/3.15.0/math.js"
       integrity="sha256-oDO8dYqkI7artPn5HobcguhXKLOOqJX680ePk8hvZ4w="
       crossorigin="anonymous"
     ></script>
     <!-- for plotting the 3d pdf https://plot.ly/javascript/3d-charts/ -->
     <script async src="https://cdn.plot.ly/plotly-1.29.0.js"></script>
-    <script async src="index.js" onload="init()"></script>
+    <script defer src="index.js"></script>
   </body>
 </html>
