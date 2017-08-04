@@ -11,66 +11,83 @@ let $ = document.querySelector.bind(document)
 let $$ = document.querySelectorAll.bind(document)
 
 
-// Returns a function, that, as long as it continues to be invoked, will not
-// be triggered. The function will be called after it stops being called for
-// N milliseconds. If `immediate` is passed, trigger the function on the
-// leading edge, instead of the trailing.
-function debounce(func, wait, immediate) {
-  var timeout
-  return function() {
-    var context = this, args = arguments
-    var later = function() {
-      timeout = null
-      if (!immediate) func.apply(context, args)
-    }
-    var callNow = immediate && !timeout
-    clearTimeout(timeout)
-    timeout = setTimeout(later, wait)
-    if (callNow) func.apply(context, args)
-  }
+function hue2rgb(p, q, t){
+  if(t < 0) t += 1;
+  if(t > 1) t -= 1;
+  if(t < 1/6) return p + (q - p) * 6 * t;
+  if(t < 1/2) return q;
+  if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+  return p;
 }
 
-function svgNode(n, v) {
-  n = document.createElementNS("http://www.w3.org/2000/svg", n)
-  for (var p in v) n.setAttribute(p, v[p])
-  return n
+function hsl2rgb(h, s, l){
+  var r, g, b;
+
+  if(s == 0){
+    r = g = b = l; // achromatic
+  } else {
+    var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    var p = 2 * l - q;
+    r = hue2rgb(p, q, h/360 + 1/3);
+    g = hue2rgb(p, q, h/360);
+    b = hue2rgb(p, q, h/360 - 1/3);
+  }
+
+  return [
+    Math.round(r * 255),
+    Math.round(g * 255),
+    Math.round(b * 255),
+    255,
+  ];
 }
 
 function colorizeThreshold(value, threshold) {
+  let H = value;
   let percentage = value / threshold * 100
   if ( percentage >= 100 ) {
-    S = 100
-    L = 50
+    S = 1.0
+    L = 0.5
   } else {
-    S = 80
-    L = 40
+    S = 0.8
+    L = 0.4
   }
-  return 'hsl(' + value + ', ' + S + '%, ' + L + '%)'
+  return hsl2rgb(H, S, L)
 }
 
-let normalCDF = function(x, mean, variance) {
-  return 1/2 * (1 + math.erf(
-    (x - mean) / Math.sqrt(2 * variance)
-  ))
+let normalConfidence = function(x1, x2, mean, variance) {
+  return (math.erf(
+    (x2 - mean) / Math.sqrt(2 * variance)
+  ) - math.erf(
+    (x1 - mean) / Math.sqrt(2 * variance)
+  )) / 2
 }
 
 let renderToleranceArea = function() {
+  /* performance experiments to do: (currently 209ms)
+   *   does it save time to re-use the imagedata buffer?
+   *   what about filling the buffer with 255, then using rgb?
+   *   make our own approximation of erf2(x1, x2)
+   */
   canvas = $('.toleranceArea')
   ctx = canvas.getContext('2d')
-  let step = 1
+  width = canvas.width
+  height = canvas.height
+  imageData = new ImageData(width, height)
 
-  for (x = 0; x <= canvas.width; x = x + step) {
-    let mean = x
-    for (y = 0; y <= canvas.height; y = y + step) {
-      let variance = Math.pow(y, 2)
-      let value = 100 * (
-        normalCDF(data.max, mean, variance) -
-        normalCDF(data.min, mean, variance)
+  for (y = 0; y < height; y++) {
+    let variance = Math.pow(y, 2)
+    for (x = 0; x < width; x++) {
+      let mean = x
+      let value = 100 * normalConfidence(
+        data.min, data.max, mean, variance,
       )
-      ctx.fillStyle = colorizeThreshold(value, data.percent)
-      ctx.fillRect(x, y, step, step)
+      imageData.data.set(
+        colorizeThreshold(value, data.percent),
+        (x + y*width) * 4,
+      )
     }
   }
+  ctx.putImageData(imageData, 0, 0);
 }
 
 
@@ -90,6 +107,11 @@ let renderSamples = function() {
   ).toFixed(2)
 }
 
+svgNode = function(n, v) {
+  n = document.createElementNS("http://www.w3.org/2000/svg", n)
+  for (var p in v) n.setAttribute(p, v[p])
+  return n
+}
 
 let sampleInputClick = function(event) {
   // <circle cx="100" cy="100" r="100"/>
@@ -109,8 +131,6 @@ let initToleranceInput = function() {
   let svg = $('.sampleInput')
   let min = svg.x.baseVal.value
   let max = min + svg.width.baseVal.value
-  console.log('min: ' + min)
-  console.log('max:', max)
   $$('.toleranceInput__slider').forEach(slider => {
     if (['min', 'max'].includes(slider.name)) {
       slider.setAttribute('min', min)
@@ -175,7 +195,6 @@ let init = function() {
 
 if (document.readyState == "complete") {
   init()
-}
-else {
+} else {
   window.addEventListener("load", init)
 }
