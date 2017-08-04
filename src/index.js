@@ -165,11 +165,9 @@ let renderToleranceRect = function() {
     }
   }
   if (! isNaN(data.percent)) {
-    rect.style.fillOpacity = data.percent / 100
+    rect.style.fillOpacity = (data.percent / 100) * 0.65 + 0.2
   }
 }
-
-
 
 let init = function() {
   $$('canvas').forEach(canvas => {
@@ -191,7 +189,6 @@ let init = function() {
     })
 
 }
-
 
 if (document.readyState == "complete") {
   init()
