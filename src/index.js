@@ -54,12 +54,9 @@ function colorizeThreshold(value, threshold) {
   return hsl2rgb(H, S, L)
 }
 
-let normalConfidence = function(x1, x2, mean, variance) {
-  return (math.erf(
-    (x2 - mean) / Math.sqrt(2 * variance)
-  ) - math.erf(
-    (x1 - mean) / Math.sqrt(2 * variance)
-  )) / 2
+let normalConfidence = function(x1, x2, mean, deviation) {
+  let distribution = jStat.normal(mean, deviation)
+  return distribution.cdf(x2) - distribution.cdf(x1)
 }
 
 let renderCanvasHeatmap = function(canvas, color) {
@@ -87,9 +84,9 @@ let renderCanvasHeatmap = function(canvas, color) {
 let renderToleranceArea = function() {
   let color = function(x, y) {
     let mean = x
-    let variance = Math.pow(y, 2)
+    let deviation = y
     let value = 100 * normalConfidence(
-      data.min, data.max, mean, variance,
+      data.min, data.max, mean, deviation,
     )
     return colorizeThreshold(value, data.percent)
   }
