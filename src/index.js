@@ -165,8 +165,8 @@ let sampleInputClick = function(event) {
     r: 3,
   }))
 
-  data.samples.push(event.offsetX)
-  data.samples.sort()
+  data.samples.push(Number(event.offsetX))
+  data.samples.sort((x, y) => x - y)
 
   renderSamples()
 }
