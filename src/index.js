@@ -174,25 +174,28 @@ let renderToleranceRect = function() {
   }
 }
 
-let init = function() {
+let onResize = function() {
   $$('canvas').forEach(canvas => {
     canvas.width = canvas.scrollWidth
     canvas.height = canvas.scrollHeight
   })
+  initToleranceInput()
+  renderToleranceArea()
+}
 
+let init = function() {
   document
     .querySelector('.sampleInput')
     .addEventListener('click', sampleInputClick)
-
-  initToleranceInput()
-  renderToleranceArea()
   document
     .querySelectorAll('.toleranceInput__slider')
     .forEach(slider => {
         slider.addEventListener('input', inputToleranceInput)
         slider.addEventListener('change', renderToleranceArea)
     })
+  window.addEventListener("resize", onResize)
 
+  onResize()
 }
 
 if (document.readyState == "complete") {
