@@ -101,7 +101,6 @@ let renderCanvasCDF = function(canvas, y) {
 
   ctx.clearRect(0, 0, width, height)
   ctx.beginPath()
-  console.log('y(0):', y(0))
   ctx.moveTo(0, scale(y(0)))
   for (x = 0; x < width; x++) {
     ctx.lineTo(x, scale(y(x)))
@@ -133,6 +132,24 @@ function renderMeanCDF() {
   renderCanvasCDF($('.meanCDF'), y)
 }
 
+function renderStandardDeviationCDF() {
+  /* https://brownmath.com/stat/stdev1.htm
+   *
+   * sigma^2 < (n - 1) s^2 / chi2inv(n - 1, p)
+   * chi2inv(n - 1, p) < (n - 1) s^2 / sigma^2
+   * p < chi2(n - 1, (n - 1) s^2 / sigma^2)
+   */
+  let deviation = jStat.stdev(data.samples, true)
+  let multiplier = (data.samples.length - 1) * Math.pow(deviation, 2)
+  let distribution = jStat.chisquare(data.samples.length - 1)
+
+  let y = function(x) {
+    let sigma = x
+    return 1 - distribution.cdf(multiplier * Math.pow(sigma, -2))
+  }
+  renderCanvasCDF($('.standardDeviationCDF'), y)
+}
+
 let renderSamples = function() {
   $('.samples').innerText = data.samples.join(', ')
 
@@ -149,6 +166,7 @@ let renderSamples = function() {
   ).toFixed(2)
 
   renderMeanCDF()
+  renderStandardDeviationCDF()
 }
 
 svgNode = function(n, v) {

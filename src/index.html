@@ -29,6 +29,9 @@
       </div>
     </div>
 
+    <p>
+    The below heatmap represents the set of acceptable log-normal distributions.
+    The x-axis is the mean, and y-axis is std-deviation/mean.
     
     <canvas class="toleranceArea"></canvas>
 
@@ -51,63 +54,44 @@
       </tr>
     </table>
 
-    <div>
-      Let's assume this follows a normal distribution
-      with two parameters: mean (µ) and variance (σ).
-      <p>
-      <small>FIXME: update this to assume log-normal distribution</small>
-    </div>
+    <p>
+    Let's assume this follows a normal distribution
+    with two parameters: mean (µ) and variance (σ).
 
-    <div>
-      Given the above samples, the probability distribution of our mean looks like so:
-      (assuming that the sample variance estimates the population mean)
+    <p>
+    Given the above samples, the probability distribution of our mean looks like so:
 
-      <canvas class="meanCDF"></canvas>
-    </div>
+    <canvas class="meanCDF">
+      CDF of the mean
+    </canvas>
 
-    <div>
-      ... and the probability distribution of the variance is:
-      (assuming that the sample mean estimates the population mean)
+    <p>
+    ... and the probability distribution of the variance is:
 
-      <canvas class="varianceCDF">
-      TODO: CDF of the variance
-      </canvas>
-    </div>
+    <canvas class="standardDeviationCDF">
+      CDF of the variance
+    </canvas>
 
-    <div>
-      But we don't need to make these assumptions! Thanks to Cochran, we know
-      that the mean and variance are independant random variables, so we can form
-      a joint distribution, varying on both:
+    <p>
+    Thanks to Cochran, we know
+    that the mean and variance are independant random variables, so we can form
+    a joint distribution, varying on both:
 
-      <canvas class="jointCDF">
-      TODO: joint CDF (mean, variance)
-      </canvas>
-    </div>
+    <canvas class="jointCDF">
+    TODO: joint CDF (mean, variance)
+    </canvas>
 
 
-    <div>
-      TODO: Finally, integrate the tolerance area of the joint distribution,
-      and decide on pass/fail/more.
-    </div>
+    <p>
+    TODO: Finally, integrate the tolerance area of the joint distribution,
+    and decide on pass/fail/more.
     
-    <!-- a vanilla-js helper
-    <script
-      async
-      src="//cdnjs.cloudflare.com/ajax/libs/blissfuljs/1.0.4/bliss.js"
-      integrity="sha256-o+7aCmzPXjZyeqM+Zz6UmSeVJQeLCRE0mOOfG768WUg="
-      crossorigin="anonymous"
-    ></script>
-    -->
-
     <script
       async
       src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.7.0/jstat.js"
       integrity="sha256-8WGYjRG7sdAlqYmKUjSWSBU89P1RxeeFTlsh2jEyp/o="
       crossorigin="anonymous"
     ></script>
-    <!-- for plotting the 3d pdf https://plot.ly/javascript/3d-charts/
-    <script async src="https://cdn.plot.ly/plotly-1.29.0.js"></script>
-    -->
     <script async src="index.js"></script>
   </body>
 </html>
