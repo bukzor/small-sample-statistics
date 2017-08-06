@@ -25,7 +25,6 @@ canvas, svg {
 
 .toleranceArea {
     height: 15em;
-    transform: scale(1, -1);
 }
 
 .toleranceInput__slider {

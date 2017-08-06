@@ -62,27 +62,21 @@ let normalConfidence = function(x1, x2, mean, variance) {
   )) / 2
 }
 
-let renderToleranceArea = function() {
+let renderCanvasHeatmap = function(canvas, color) {
   /* performance experiments to do: (currently 209ms)
    *   does it save time to re-use the imagedata buffer?
    *   what about filling the buffer with 255, then using rgb?
    *   make our own approximation of erf2(x1, x2)
    */
-  canvas = $('.toleranceArea')
   ctx = canvas.getContext('2d')
   width = canvas.width
   height = canvas.height
   imageData = new ImageData(width, height)
 
   for (y = 0; y < height; y++) {
-    let variance = Math.pow(y, 2)
     for (x = 0; x < width; x++) {
-      let mean = x
-      let value = 100 * normalConfidence(
-        data.min, data.max, mean, variance,
-      )
       imageData.data.set(
-        colorizeThreshold(value, data.percent),
+        color(x, height - y),
         (x + y*width) * 4,
       )
     }
@@ -90,6 +84,17 @@ let renderToleranceArea = function() {
   ctx.putImageData(imageData, 0, 0);
 }
 
+let renderToleranceArea = function() {
+  let color = function(x, y) {
+    let mean = x
+    let variance = Math.pow(y, 2)
+    let value = 100 * normalConfidence(
+      data.min, data.max, mean, variance,
+    )
+    return colorizeThreshold(value, data.percent)
+  }
+  renderCanvasHeatmap($('.toleranceArea'), color)
+}
 
 let renderSamples = function() {
   $('.samples').innerText = data.samples.join(', ')
