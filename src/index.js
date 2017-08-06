@@ -136,6 +136,11 @@ let initToleranceInput = function() {
       slider.setAttribute('min', min)
       slider.setAttribute('max', max)
     }
+    if (slider.name === "min") {
+      slider.setAttribute('value', min + (max - min) * 2 / 5)
+    } else if (slider.name === "max") {
+      slider.setAttribute('value', min + (max - min) * 3 / 5)
+    }
     inputToleranceInput({target:slider})
   })
 
