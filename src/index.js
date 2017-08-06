@@ -93,6 +93,46 @@ let renderToleranceArea = function() {
   renderCanvasHeatmap($('.toleranceArea'), color)
 }
 
+let renderCanvasCDF = function(canvas, y) {
+  ctx = canvas.getContext('2d')
+  width = canvas.width
+  height = canvas.height
+  scale = y => height * (1 - y)
+
+  ctx.clearRect(0, 0, width, height)
+  ctx.beginPath()
+  console.log('y(0):', y(0))
+  ctx.moveTo(0, scale(y(0)))
+  for (x = 0; x < width; x++) {
+    ctx.lineTo(x, scale(y(x)))
+  }
+  ctx.stroke()
+}
+
+function renderMeanCDF() {
+  /* http://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm
+   *
+   *  Xbar + invt(p,n-1) * s / sqrt(n) > mu
+   *  invt(p, n-1) >  (mu - Xbar) * sqrt(n) / s
+   *  p >  t((mu - Xbar) * sqrt(n) / s, n-1)
+   */
+
+  let deviation = jStat.stdev(data.samples, true)
+  let mean = jStat.mean(data.samples)
+  let multiplier
+  if (deviation === 0) {
+    multiplier = 1e100
+  } else {
+    multiplier = Math.sqrt(data.samples.length) / deviation
+  }
+  let distribution = jStat.studentt(data.samples.length - 1)
+
+  let y = function(x) {
+    return distribution.cdf((x - mean) * multiplier)
+  }
+  renderCanvasCDF($('.meanCDF'), y)
+}
+
 let renderSamples = function() {
   $('.samples').innerText = data.samples.join(', ')
 
@@ -107,6 +147,8 @@ let renderSamples = function() {
     data.samples.reduce((acc, next) => acc + Math.pow(next - mean, 2), 0) / count,
     0.5,
   ).toFixed(2)
+
+  renderMeanCDF()
 }
 
 svgNode = function(n, v) {

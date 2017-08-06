@@ -53,21 +53,35 @@
 
     <div>
       Let's assume this follows a normal distribution
-      with two parameters: degrees of freedom (k) and shape (λ).
+      with two parameters: mean (µ) and variance (σ).
       <p>
       <small>FIXME: update this to assume log-normal distribution</small>
     </div>
 
     <div>
-      TODO: CDF of the mean
+      Given the above samples, the probability distribution of our mean looks like so:
+      (assuming that the sample variance estimates the population mean)
+
+      <canvas class="meanCDF"></canvas>
     </div>
 
     <div>
+      ... and the probability distribution of the variance is:
+      (assuming that the sample mean estimates the population mean)
+
+      <canvas class="varianceCDF">
       TODO: CDF of the variance
+      </canvas>
     </div>
 
     <div>
+      But we don't need to make these assumptions! Thanks to Cochran, we know
+      that the mean and variance are independant random variables, so we can form
+      a joint distribution, varying on both:
+
+      <canvas class="jointCDF">
       TODO: joint CDF (mean, variance)
+      </canvas>
     </div>
 
 
