@@ -8,23 +8,19 @@ body {
 
 canvas, svg {
     width: 100%;
-    height: 100%;
+    height: 50px;
     border: 1px solid black;
     margin-top: 1em;
+}
+
+.u-graph--fullHeight {
+  height: 250px;
 }
 
 .main {
     display: grid;
     padding: 0 1em;
     grid-auto-rows: max-content;
-}
-
-.sampleInput {
-    height: 5em;
-}
-
-.toleranceArea {
-    height: 15em;
 }
 
 .toleranceInput__slider {

@@ -5,6 +5,7 @@ const data = {
   max: NaN,
   percent: NaN,
 }
+const CDFHeight = 50  // in pixels
 
 // let's use blissful?
 let $ = document.querySelector.bind(document)
@@ -41,8 +42,13 @@ function hsl2rgb(h, s, l){
   ]
 }
 
+function modulo(x, y) {
+  return ((x % y) + y) % y
+}
+
+
 function colorizeThreshold(value, threshold) {
-  let H = value
+  let H = modulo(value, 360)
   let percentage = value / threshold * 100
   if ( percentage >= 100 ) {
     S = 1.0
@@ -130,6 +136,11 @@ function renderMeanCDF() {
     return distribution.cdf((x - mean) * multiplier)
   }
   renderCanvasCDF($('.meanCDF'), y)
+
+  y = function(x) {
+    return distribution.pdf((x - mean) * multiplier) * multiplier * CDFHeight
+  }
+  renderCanvasCDF($('.meanPDF'), y)
 }
 
 function renderStandardDeviationCDF() {
@@ -148,6 +159,36 @@ function renderStandardDeviationCDF() {
     return 1 - distribution.cdf(multiplier * Math.pow(sigma, -2))
   }
   renderCanvasCDF($('.standardDeviationCDF'), y)
+
+  y = function(x) {
+    let sigma = x
+    return -distribution.pdf(multiplier * Math.pow(sigma, -2)) * (-2 * multiplier * Math.pow(sigma, -3)) * CDFHeight
+  }
+  renderCanvasCDF($('.standardDeviationPDF'), y)
+}
+
+function renderJointCDF() {
+  // TODO: DRY me
+  let deviation = jStat.stdev(data.samples, true)
+  let mean = jStat.mean(data.samples)
+  let meanMultiplier
+  if (deviation === 0) {
+    meanMultiplier = 1e100
+  } else {
+    meanMultiplier = Math.sqrt(data.samples.length) / deviation
+  }
+  let meanDistribution = jStat.studentt(data.samples.length - 1)
+  let deviationMultiplier = (data.samples.length - 1) * Math.pow(deviation, 2)
+  let deviationDistribution = jStat.chisquare(data.samples.length - 1)
+
+  let color = function(x, y) {
+    let meanPDF  = meanDistribution.pdf((x - mean) * meanMultiplier) * meanMultiplier * CDFHeight
+    let sigma = y
+    let deviationPDF = -deviationDistribution.pdf(deviationMultiplier * Math.pow(sigma, -2)) * (-2 * deviationMultiplier * Math.pow(sigma, -3)) * CDFHeight
+    let value = 100 * meanPDF * deviationPDF
+    return colorizeThreshold(value, 0)
+  }
+  renderCanvasHeatmap($('.jointCDF'), color)
 }
 
 let renderSamples = function() {
@@ -167,6 +208,7 @@ let renderSamples = function() {
 
   renderMeanCDF()
   renderStandardDeviationCDF()
+  renderJointCDF()
 }
 
 svgNode = function(n, v) {

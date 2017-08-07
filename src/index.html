@@ -33,7 +33,7 @@
     The below heatmap represents the set of acceptable log-normal distributions.
     The x-axis is the mean, and y-axis is std-deviation/mean.
     
-    <canvas class="toleranceArea"></canvas>
+    <canvas class="toleranceArea u-graph--fullHeight"></canvas>
 
     <svg class="sampleInput">
       <rect class="sampleInput__tolerance"></rect>
@@ -64,6 +64,10 @@
     <canvas class="meanCDF">
       CDF of the mean
     </canvas>
+    <canvas class="meanPDF">
+      PDF of the mean
+    </canvas>
+
 
     <p>
     ... and the probability distribution of the variance is:
@@ -72,12 +76,16 @@
       CDF of the variance
     </canvas>
 
+    <canvas class="standardDeviationPDF">
+      PDF of the variance
+    </canvas>
+
     <p>
     Thanks to Cochran, we know
     that the mean and variance are independant random variables, so we can form
     a joint distribution, varying on both:
 
-    <canvas class="jointCDF">
+    <canvas class="jointCDF u-graph--fullHeight">
     TODO: joint CDF (mean, variance)
     </canvas>
 
