@@ -1,1 +1,1 @@
-export PATH=$PWD/venv/bin:$PATH
+export PATH=$PWD/venv/bin:$PWD/node_modules/.bin:$PATH
