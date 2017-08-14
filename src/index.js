@@ -218,14 +218,12 @@ svgNode = function(n, v) {
 }
 
 let sampleInputClick = function(event) {
-  // <circle cx="100" cy="100" r="100"/>
-  event.currentTarget.append(svgNode('circle', {
-    cx: event.offsetX,
-    cy: event.offsetY,
-    r: 3,
-  }))
+  bbox = this.getBoundingClientRect()
+  x = event.clientX - bbox.x
+  y = event.clientY - bbox.y
+  event.currentTarget.append(svgNode('circle', {cx: x, cy: y, r: 3}))
 
-  data.samples.push(Number(event.offsetX))
+  data.samples.push(Number(x))
   data.samples.sort((x, y) => x - y)
 
   renderSamples()
