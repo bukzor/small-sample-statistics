@@ -1,4 +1,9 @@
+Explanation
+===========
 
+I'm trying to develop (what seems to be) novel statistics for the analysis of
+small samples, given a tolerated range of values and a tolerated success rate.
+The planned application is flake-free regression testing of performance bugs.
 
 
 Development
