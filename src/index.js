@@ -9,7 +9,7 @@ const CDFHeight = 50  // in pixels
 
 // let's use blissful?
 let $ = document.querySelector.bind(document)
-let $$ = document.querySelectorAll.bind(document)
+let $$ = selector => Array.from(document.querySelectorAll(selector))
 
 
 function hue2rgb(p, q, t){
@@ -286,11 +286,9 @@ let onResize = function() {
 }
 
 let init = function() {
-  document
-    .querySelector('.sampleInput')
+  $('.sampleInput')
     .addEventListener('click', sampleInputClick)
-  document
-    .querySelectorAll('.toleranceInput__slider')
+  $$('.toleranceInput__slider')
     .forEach(slider => {
         slider.addEventListener('input', inputToleranceInput)
         slider.addEventListener('change', renderToleranceArea)
